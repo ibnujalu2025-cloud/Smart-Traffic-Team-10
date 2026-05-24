@@ -3,7 +3,7 @@ import sys
 import os
 
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
-from graph import build_traffic_graph
+from data_structures.graph import build_traffic_graph
 
 
 # ─────────────────────────────────────────────
