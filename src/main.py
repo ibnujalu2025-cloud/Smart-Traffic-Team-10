@@ -36,7 +36,7 @@ from src.modules.modul_5 import (
     benchmark_sorting,
     tampilkan_benchmark
 )
-from src.modules.modul_6 import jalankan_cli
+from src.modules.modul_6 import TrafficCLI
 
 
 # ─────────────────────────────────────────────
@@ -83,25 +83,8 @@ def mode_demo() -> None:
     print(f"Jalur : {' → '.join(jalur)}")
 
     print("\n[4] Masukkan AMBULANS ke B3 dan berangkatkan...")
-
-    manajer.masuk(
-        "B3",
-        "AMBULANS",
-        "AB9999",
-        "B3",
-        "E5",
-        999.0
-    )
-
-    manajer.masuk(
-        "B3",
-        "MOTOR",
-        "AB1000",
-        "B3",
-        "A1",
-        1000.0
-    )
-
+    masuk(persimpangan, jenis, plat, asal, tujuan, waktu)
+    manajer.masuk("B3", "MOTOR", "A1", arrival_time=1000.0, verbose=True)
     manajer.berangkat("B3")
 
     print("\n[5] Laporan kemacetan top-5...")
@@ -170,6 +153,8 @@ def mode_simulasi() -> None:
     print(f"  Kendaraan masuk  : {r['total_masuk']}")
     print(f"  Kendaraan berangkat: {r['total_berangkat']}")
     print(f"  AMBULANS masuk   : {r['total_ambulans']}")
+    print(f"  Query Dijkstra   : {stat_query.get('total_query',0)}")
+    print(f"  Jarak rata-rata  : {stat_query.get('jarak_rata',0):.0f}m")
     print(f"  Waktu total      : {t_total:.3f}s")
     print(f"{'═'*60}")
 
@@ -264,7 +249,8 @@ def main():
         mode_analisis()
     else:
         # Default: CLI interaktif
-        jalankan_cli()
+        cli = TrafficCLI(seed=SEED)
+        cli.run()
 
 
 if __name__ == "__main__":
