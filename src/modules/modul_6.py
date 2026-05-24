@@ -24,11 +24,11 @@ random.seed(17)
 # Tambah path agar modul dapat diimport
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
-from modul_1 import bangun_graf_kota, NAMA_PERSIMPANGAN, GraphJaringanJalan
+from modul_1 import build_traffic_graph, NAMA_PERSIMPANGAN, TrafficGraph
 from modul_2 import ManajerAntrian, simulasi_event, PRIORITAS
 from modul_3 import DijkstraRuteOptimal
 from modul_4 import BSTIndeksPersimpangan, bangun_bst_dari_graf
-from modul_5 import (bangun_laporan, LinkedListLaporan,
+from modul_5 import (buat_laporan, LinkedListLaporan,
                      identifikasi_bottleneck)
 
 
@@ -117,7 +117,7 @@ class StateSimulasi:
 
     def __init__(self):
         print("  [â³] Membangun infrastruktur simulasi ...")
-        self.graf        = bangun_graf_kota()
+        self.graf        = build_traffic_graph()
         self.manajer     = ManajerAntrian(NAMA_PERSIMPANGAN)
         self.dijkstra    = DijkstraRuteOptimal(self.graf)
         self.bst         = bangun_bst_dari_graf(self.graf)
@@ -327,7 +327,7 @@ def cmd_laporan(state: StateSimulasi, args: list):
     Big-O: O(nÂ²)
     """
     _header("LAPORAN KEMACETAN")
-    laporan = bangun_laporan(state.manajer)
+    laporan = buat_laporan(state.manajer)
 
     # Pilih sorting method
     metode = "SELECTION"
@@ -480,7 +480,7 @@ def cmd_kemacetan(state: StateSimulasi, _args: list):
     Tampilkan ringkasan kemacetan seluruh persimpangan.
     """
     _header("RINGKASAN KEMACETAN KOTA")
-    laporan = bangun_laporan(state.manajer)
+    laporan = buat_laporan(state.manajer)
     laporan_terurut = laporan.salin()
     laporan_terurut.selection_sort_desc()
     laporan_terurut.tampilkan(maks=10,
@@ -489,7 +489,7 @@ def cmd_kemacetan(state: StateSimulasi, _args: list):
     print(f"\n  Total kendaraan di seluruh kota: {total}")
     sibuk, jml = state.manajer.persimpangan_tersibuk()
     print(f"  Paling macet: {sibuk} ({jml} kendaraan)")
-    _bigo("bangun_laporan", "O(VÂ·n)")
+    _bigo("buat_laporan", "O(VÂ·n)")
     _bigo("selection_sort_desc", "O(nÂ²)")
 
 

@@ -17,26 +17,24 @@ import sys, os, argparse, time, random
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
 from src.data_model import SEED, VEHICLE_TYPES
-from src.modules.modul_1 import (
-    bangun_graf_kota
+from src.data_structures.graph import (
+    build_traffic_graph
 )
-from src.modules.modul_2 import (
-    ManajerAntrian, simulasi_event
+from src.data_structures.priority_queue import (
+    TrafficQueueManager,
+    Vehicle,
+    VEHICLE_TYPES
 )
-from src.modules.modul_3 import (
-    DijkstraRuteOptimal,
-    jalankan_50_query,
+from src.data_structures.dijkstra import (
+    DijkstraSolver
 )
-from src.modules.modul_4 import (
-    bangun_bst_dari_graf
+from src.data_structures.bst import (
+    build_intersection_bst
 )
-from src.modules.modul_5 import (
-    bangun_laporan,
-    identifikasi_bottleneck,
-    benchmark_sorting,
-    tampilkan_benchmark
+from src.data_structures.sorting import (
+    buat_laporan,
+    eksperimen_runtime
 )
-from src.modules.modul_6 import TrafficCLI
 
 
 # ─────────────────────────────────────────────
@@ -50,60 +48,70 @@ def mode_demo() -> None:
     print("="*60)
 
     # Setup semua modul
-    graf    = bangun_graf_kota()
-    nodes = graf.semua_persimpangan()
-    manajer = ManajerAntrian(nodes)
-    solver = DijkstraRuteOptimal(graf)
-    bst = bangun_bst_dari_graf(graf)
+    graf = build_traffic_graph()
+    nodes = graf.nodes
+    manajer = TrafficQueueManager(nodes)
+    solver = DijkstraSolver(graf)
+    bst = build_intersection_bst(graf)
 
     random.seed(SEED)
 
-    print("\n[1] Tampilkan info jaringan...")
-    graf.tampilkan_graf()
+    print(graf)
+    print("Nodes:", graf.nodes)
+
 
     print("[2] Simulasi 20 event kendaraan...")
-    from src.modules.modul_6 import TrafficCLI
     for i in range(20):
         asal   = random.choice(nodes)
         tujuan = random.choice([n for n in nodes if n != asal])
         jenis  = random.choice(VEHICLE_TYPES)
-        manajer.masuk(
-             asal,
-             jenis,
-             f"AB{i:04d}",
-             asal,
-             tujuan,
-             float(i)
-)
+
+        vehicle = Vehicle(
+            jenis,
+            asal,
+            tujuan,
+            arrival_time=float(i)
+        )
+
+        manajer.masuk(asal, vehicle)
+    
 
     print("[3] Cari rute A1 → E5 (Dijkstra)...")
-    jalur, jarak = solver.rute("Malioboro", "Prambanan")
+    jarak, jalur = solver.shortest_path("A1", "E5")
 
     print(f"Jarak : {jarak}")
     print(f"Jalur : {' → '.join(jalur)}")
 
     print("\n[4] Masukkan AMBULANS ke B3 dan berangkatkan...")
-    masuk(persimpangan, jenis, plat, asal, tujuan, waktu)
-    manajer.masuk("B3", "MOTOR", "A1", arrival_time=1000.0, verbose=True)
+    vehicle = Vehicle(
+    "AMBULANS",
+    "A1",
+    "B3",
+    arrival_time=1000.0
+)
+
+    manajer.masuk("B3", vehicle)
     manajer.berangkat("B3")
 
     print("\n[5] Laporan kemacetan top-5...")
-    laporan = bangun_laporan(manajer)
-    laporan.selection_sort_desc()
-    laporan.tampilkan(maks=5, judul="TOP-5 KEMACETAN")
+    dummy_counts = {}
+
+    for nama in nodes:
+        dummy_counts[nama] = manajer.antrian(nama).size()
+
+    laporan = buat_laporan(nodes, dummy_counts)
+
+    laporan.selection_sort()
+
+    print(laporan.to_list()[:5])
 
     print("[6] Cari data BST...")
-    node = bst.search("Malioboro")
+    node = bst.search("C3")
     if node:
-        print(f"{node.kunci} → {node.data}")
+        print(f"{node.key} → {node.data}")
     else:
         print("Data tidak ditemukan")
 
-    print("\n[7] Top-3 bottleneck:")
-    bottleneck = identifikasi_bottleneck(laporan, persentil=0.2)
-
-    for rank, node in enumerate(bottleneck, 1):
-        print(f"  {rank}. {node.nama}: {node.jumlah_kendaraan} kendaraan")
 
     print("\n" + "="*60)
     print("  Demo selesai.")
@@ -122,39 +130,46 @@ def mode_simulasi() -> None:
 
     t_global = time.perf_counter()
 
-    graf    = bangun_graf_kota()
-    nodes = graf.semua_persimpangan()
-    manajer = ManajerAntrian(nodes)
-    solver = DijkstraRuteOptimal(graf)
-    bst = bangun_bst_dari_graf(graf)
+    graf    = build_traffic_graph()
+    nodes = graf.nodes
+    manajer = TrafficQueueManager(nodes)
+    solver = DijkstraSolver(graf)
+    bst = build_intersection_bst(graf)
 
     # 500 event
-    stats = simulasi_event(manajer, nodes, n_event=500, seed=17)
+    # stats = simulasi_event(manajer, nodes, n_event=500, seed=17)
 
-    # 50 query Dijkstra
-    hasil_query = jalankan_50_query(solver, nodes)
+    # # 50 query Dijkstra
+    # hasil_query = jalankan_50_query(solver, nodes)
 
     # Laporan kemacetan
-    laporan = bangun_laporan(manajer)
-    laporan.selection_sort_desc()
-    laporan.tampilkan(maks=10, judul="LAPORAN KEMACETAN AKHIR")
+    dummy_counts = {}
+
+    for nama in nodes:
+        dummy_counts[nama] = manajer.antrian(nama).size()
+
+    laporan = buat_laporan(nodes, dummy_counts)
+
+    laporan.selection_sort()
+
+    print(laporan.to_list()[:5])
 
     # Eksperimen runtime sorting
-    eks = benchmark_sorting([10, 25, 100])
-    tampilkan_benchmark(eks)
+    eks = eksperimen_runtime([10, 25, 100])
+    # tampilkan_benchmark(eks)
 
     t_total = time.perf_counter() - t_global
 
     print(f"\n{'═'*60}")
     print(f"  RINGKASAN AKHIR")
     print(f"{'═'*60}")
-    r = stats.ringkasan()
-    print(f"  Total event      : {r['total_event']}")
-    print(f"  Kendaraan masuk  : {r['total_masuk']}")
-    print(f"  Kendaraan berangkat: {r['total_berangkat']}")
-    print(f"  AMBULANS masuk   : {r['total_ambulans']}")
-    print(f"  Query Dijkstra   : {stat_query.get('total_query',0)}")
-    print(f"  Jarak rata-rata  : {stat_query.get('jarak_rata',0):.0f}m")
+    # r = stats.ringkasan()
+    # print(f"  Total event      : {r['total_event']}")
+    # print(f"  Kendaraan masuk  : {r['total_masuk']}")
+    # print(f"  Kendaraan berangkat: {r['total_berangkat']}")
+    # print(f"  AMBULANS masuk   : {r['total_ambulans']}")
+    # print(f"  Query Dijkstra   : {stat_query.get('total_query',0)}")
+    # print(f"  Jarak rata-rata  : {stat_query.get('jarak_rata',0):.0f}m")
     print(f"  Waktu total      : {t_total:.3f}s")
     print(f"{'═'*60}")
 
@@ -249,8 +264,9 @@ def main():
         mode_analisis()
     else:
         # Default: CLI interaktif
-        cli = TrafficCLI(seed=SEED)
-        cli.run()
+        mode_demo()
+        # cli = TrafficCLI(seed=SEED)
+        # cli.run()
 
 
 if __name__ == "__main__":

@@ -182,7 +182,7 @@ class DijkstraRuteOptimal:
         t_mulai  = time.perf_counter()
 
         # Inisialisasi
-        semua    = self.graf.semua_persimpangan()
+        semua    = self.graf.nodes
         jarak    = {v: float('inf') for v in semua}
         pendahulu = {v: None for v in semua}
         dikunjungi = set()
@@ -331,14 +331,14 @@ def tampilkan_hasil_query(hasil: list, maks: int = 10):
 # ──────────────────────────────────────────────
 
 def demo_modul_3():
-    from modul_1 import bangun_graf_kota, NAMA_PERSIMPANGAN
+    from modul_1 import build_traffic_graph, NAMA_PERSIMPANGAN
 
     print("\n" + "█"*60)
     print("  MODUL 3 — Dijkstra Rute Optimal")
     print("  ELT60213 Algoritma dan Struktur Data | Topik 7")
     print("█"*60)
 
-    g = bangun_graf_kota()
+    g = build_traffic_graph()
     dijkstra = DijkstraRuteOptimal(g)
 
     # Single source dari Malioboro

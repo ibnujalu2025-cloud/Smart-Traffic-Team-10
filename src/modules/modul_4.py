@@ -330,13 +330,14 @@ def bangun_bst_dari_graf(graf) -> BSTIndeksPersimpangan:
     """
     import random
     bst   = BSTIndeksPersimpangan()
-    nodes = graf.semua_persimpangan()
+    nodes = graf.nodes
     random.seed(17)
     random.shuffle(nodes)           # acak agar pohon seimbang
 
     for nama in nodes:
-        metadata = graf.nodes.get(nama, {})
-        metadata["degree"] = graf.degree(nama)
+        metadata = {
+            "degree": graf.degree(nama)
+        }
         bst.insert(nama, metadata)
 
     return bst
@@ -387,14 +388,14 @@ def benchmark_bst(bst: BSTIndeksPersimpangan,
 # ──────────────────────────────────────────────
 
 def demo_modul_4():
-    from modul_1 import bangun_graf_kota, NAMA_PERSIMPANGAN
+    from modul_1 import build_traffic_graph, NAMA_PERSIMPANGAN
 
     print("\n" + "█"*60)
     print("  MODUL 4 — BST Indeks Persimpangan")
     print("  ELT60213 Algoritma dan Struktur Data | Topik 7")
     print("█"*60)
 
-    g   = bangun_graf_kota()
+    g   = build_traffic_graph()
     bst = bangun_bst_dari_graf(g)
 
     bst.tampilkan_pohon(maks_tinggi=3)

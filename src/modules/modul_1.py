@@ -100,7 +100,7 @@ class AdjList:
 # ──────────────────────────────────────────────
 # GRAPH JARINGAN JALAN
 # ──────────────────────────────────────────────
-class GraphJaringanJalan:
+class TrafficGraph:
     """
     Graf berbobot menggunakan dictionary of AdjList.
     Mendukung graf berarah dan tidak berarah.
@@ -112,7 +112,7 @@ class GraphJaringanJalan:
 
     def __init__(self):
         self.adj   = {}             # {nama_persimpangan: AdjList}
-        self.nodes = {}             # {nama_persimpangan: {lat, lon, ...}}
+        self._nodes = {}             # {nama_persimpangan: {lat, lon, ...}}
         self._jumlah_edge = 0
 
     # ── OPERASI PERSIMPANGAN ──────────────────
@@ -126,7 +126,7 @@ class GraphJaringanJalan:
         if nama in self.adj:
             return False
         self.adj[nama]   = AdjList()
-        self.nodes[nama] = meta
+        self._nodes[nama] = meta
         return True
 
     def hapus_persimpangan(self, nama: str) -> bool:
@@ -141,7 +141,7 @@ class GraphJaringanJalan:
             if src != nama:
                 self.adj[src].hapus_edge(nama)
         del self.adj[nama]
-        del self.nodes[nama]
+        del self._nodes[nama]
         return True
 
     def ada_persimpangan(self, nama: str) -> bool:
@@ -225,8 +225,8 @@ class GraphJaringanJalan:
     def jumlah_jalan(self) -> int:
         return self._jumlah_edge
 
-    def semua_persimpangan(self) -> list:
-        """Big-O: O(V)"""
+    @property
+    def nodes(self):
         return list(self.adj.keys())
 
     # ── DFS — DETEKSI PERSIMPANGAN TERISOLASI ─
@@ -327,7 +327,7 @@ class GraphJaringanJalan:
             return
         print(f"\n  Persimpangan : {nama}")
         print(f"  Degree       : {self.degree(nama)}")
-        print(f"  Metadata     : {self.nodes.get(nama, {})}")
+        print(f"  Metadata     : {self._nodes.get(nama, {})}")
         print(f"  Tetangga     :")
         for t, b in self.tetangga(nama):
             print(f"    → {t}  ({b:.0f} m)")
@@ -348,7 +348,7 @@ NAMA_PERSIMPANGAN = [
 ]
 
 
-def bangun_graf_kota() -> GraphJaringanJalan:
+def build_traffic_graph(seed=17) -> TrafficGraph:
     """
     Membangun graf kota Yogyakarta simulatif dengan:
     - 25 persimpangan (node)
@@ -357,8 +357,9 @@ def bangun_graf_kota() -> GraphJaringanJalan:
 
     Big-O keseluruhan: O(V + E)
     """
-    rng = np.random.default_rng(17)     # generator deterministik
-    g   = GraphJaringanJalan()
+    random.seed(seed)
+    np.random.seed(seed)
+    g = TrafficGraph()
 
     # Tambah semua persimpangan
     for nama in NAMA_PERSIMPANGAN:
@@ -370,7 +371,7 @@ def bangun_graf_kota() -> GraphJaringanJalan:
     rng_py.shuffle(nodes)
 
     for i in range(1, len(nodes)):
-        bobot = float(rng.integers(300, 1500))
+        bobot = float(np.random.randint(300, 1500))
         g.tambah_jalan(nodes[i-1], nodes[i], bobot, dua_arah=True)
 
     # Tambah edge tambahan hingga ±40 total undirected edges
@@ -384,7 +385,7 @@ def bangun_graf_kota() -> GraphJaringanJalan:
             continue
         if g.adj[u].cari_edge(v) is not None:   # sudah ada
             continue
-        bobot = float(rng.integers(200, 2000))
+        bobot = float(np.random.randint(200, 2000))
         g.tambah_jalan(u, v, bobot, dua_arah=True)
 
     return g
@@ -400,7 +401,7 @@ def demo_modul_1():
     print("  ELT60213 Algoritma dan Struktur Data | Topik 7")
     print("█"*60)
 
-    g = bangun_graf_kota()
+    g = build_traffic_graph()
     g.tampilkan_graf(maks_tampil=8)
 
     # Info satu persimpangan

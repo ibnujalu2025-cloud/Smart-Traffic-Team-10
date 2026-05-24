@@ -199,7 +199,7 @@ class LinkedListLaporan:
 # LAPORAN KEMACETAN DARI MANAJER ANTRIAN
 # ──────────────────────────────────────────────
 
-def bangun_laporan(manajer_antrian) -> LinkedListLaporan:
+def buat_laporan(manajer_antrian) -> LinkedListLaporan:
     """
     Bangun linked list laporan dari ManajerAntrian (Modul 2).
     Big-O: O(V * n) — V persimpangan, n kendaraan tiap antrian
@@ -226,7 +226,7 @@ def bangun_laporan(manajer_antrian) -> LinkedListLaporan:
     return laporan
 
 
-def bangun_laporan_simulatif(daftar_persimpangan: list,
+def buat_laporan_simulatif(daftar_persimpangan: list,
                               seed: int = 17) -> LinkedListLaporan:
     """
     Bangun laporan kemacetan SIMULATIF (tanpa manajer antrian).
@@ -293,7 +293,7 @@ def benchmark_sorting(ukuran_list: list = None,
         nama_list = buat_nama(n)
 
         # Buat linked list data sama untuk perbandingan fair
-        laporan_ref = bangun_laporan_simulatif(nama_list, seed)
+        laporan_ref = buat_laporan_simulatif(nama_list, seed)
 
         # Selection Sort
         lap_sel = laporan_ref.salin()
@@ -328,15 +328,15 @@ def benchmark_sorting(ukuran_list: list = None,
 
 def tampilkan_benchmark(hasil: list):
     """Tampilkan tabel benchmark sorting."""
-    print("\n  ╔══════════════════════════════════════════════════════╗")
+    print("\n╔══════════════════════════════════════════════════════╗")
     print("  ║          TABEL BENCHMARK SORTING — BIG-O O(n²)       ║")
-    print("  ╠══════════╦═══════════════╦═══════════════╦══════════╣")
-    print("  ║    N     ║ Selection (ms)║ Insertion (ms)║ Benar?   ║")
-    print("  ╠══════════╬═══════════════╬═══════════════╬══════════╣")
+    print("  ╠══════════╦═══════════════╦═══════════════╦═══════════╣")
+    print("  ║    N     ║ Selection (ms)║ Insertion (ms)║ Benar?    ║")
+    print("  ╠══════════╬═══════════════╬═══════════════╬═══════════╣")
     for r in hasil:
-        print(f"  ║ {r['n']:>8} ║ {r['t_sel']:>13.4f} ║ "
-              f"{r['t_ins']:>13.4f} ║ "
-              f"{'  ✓' if r['benar'] else '  ✗':>8}   ║")
+        print(f"  ║ {r['n']:>8} ║ {r['t_sel']:>13.4f}║ "
+              f"{r['t_ins']:>13.4f}║ "
+              f"{'  ✓' if r['benar'] else '  ✗':>8}  ║")
     print("  ╚══════════╩═══════════════╩═══════════════╩══════════╝")
     print()
     # Rasio runtime
@@ -357,7 +357,7 @@ def tampilkan_benchmark(hasil: list):
 # ──────────────────────────────────────────────
 
 def demo_modul_5():
-    from modul_1 import bangun_graf_kota, NAMA_PERSIMPANGAN
+    from modul_1 import build_traffic_graph, NAMA_PERSIMPANGAN
     from modul_2 import ManajerAntrian, simulasi_event
 
     print("\n" + "█"*60)
@@ -366,11 +366,11 @@ def demo_modul_5():
     print("█"*60)
 
     # Bangun data dari simulasi
-    g       = bangun_graf_kota()
+    g       = build_traffic_graph()
     manajer = ManajerAntrian(NAMA_PERSIMPANGAN)
     simulasi_event(manajer, NAMA_PERSIMPANGAN, n_event=500, seed=17)
 
-    laporan = bangun_laporan(manajer)
+    laporan = buat_laporan(manajer)
     laporan.tampilkan(maks=5, judul="Data Sebelum Sorting")
 
     # Selection Sort
@@ -412,7 +412,7 @@ def demo_modul_5():
     print("  ║  Selection Sort  : O(n²) selalu          ║")
     print("  ║  Insertion Sort  : O(n²) terburuk        ║")
     print("  ║                    O(n)  terbaik         ║")
-    print("  ║  bangun_laporan  : O(V·n)                ║")
+    print("  ║  buat_laporan  : O(V·n)                  ║")
     print("  ║  bottleneck      : O(n)                  ║")
     print("  ╚══════════════════════════════════════════╝")
 
