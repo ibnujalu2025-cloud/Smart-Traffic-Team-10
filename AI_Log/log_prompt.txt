@@ -35,7 +35,7 @@ Pertanyaan Modul 5:
 5. Fungsi `selection_sort_desc()` selalu memiliki kompleksitas O(n²), sedangkan `insertion_sort_desc()` bisa lebih cepat pada kondisi tertentu. Mengapa insertion sort dapat lebih efisien dibanding selection sort pada data yang hampir terurut?
 
 Pertanyaan Modul 6:
-1. Pada class `SiklusLampu`, mengapa history perubahan fase disimpan menggunakan stack (`history_stack`)? Apa keuntungan struktur stack dibanding queue untuk fitur `mundur()`?
+1. Pada class `SiklusLampu`, mengapa history perubahan fase disimpan menggunakan stack (`history_stack`)? Apa keuntungan struktur stack dibanding queue untuk fitur mundur()?
 2. Pada fungsi `cmd_masuk()`, mengapa validasi persimpangan dilakukan menggunakan BST (`state.bst.ada()`) sebelum kendaraan dimasukkan ke antrian? Apa yang terjadi jika validasi tersebut dihapus?
 3. Pada fungsi `cmd_rute()`, mengapa program tetap melakukan pengecekan: python id="’wini2301" if not jalur: setelah algoritma Dijkstra selesai dijalankan? Apa yang terjadi jika kondisi tersebut dihapus?
 4. Fungsi `cmd_laporan()` memberi pilihan antara Selection Sort dan Insertion Sort. Dalam kondisi data kemacetan yang hampir terurut, mengapa Insertion Sort dapat lebih cepat dibanding Selection Sort?
