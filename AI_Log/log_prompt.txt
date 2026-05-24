@@ -1,0 +1,42 @@
+Pertanyaan Modul 1:
+1. Pada fungsi hapus_persimpangan(), kenapa program harus melakukan iterasi ke semua node lain untuk menghapus edge yang menuju node tersebut? Apa yang terjadi jika bagian itu dihapus?
+2. Di fungsi _dfs(), kenapa ada pengecekan: if v in dikunjungi: continue" Apa dampaknya terhadap traversal jika baris tersebut dihapus, terutama pada graph yang memiliki banyak siklus?
+3. Fungsi tambah_jalan() selalu menambahkan edge ke depan linked list adjacency list. Bagaimana pengaruhnya terhadap urutan traversal BFS/DFS jika edge ditambahkan di belakang linked list instead of depan?
+4. Pada fungsi deteksi_terisolasi(), DFS dimulai dari: mulai = next(iter(self.adj)) apa yang terjadi jika node pertama yang dipilih ternyata berada di komponen kecil yang bukan komponen utama graph? Apakah hasil deteksi masih akurat?
+5. Fungsi bfs() menggunakan list Python biasa sebagai queue dengan variabel head_idx, bukan pop(0). Kenapa pendekatan ini lebih efisien? Apa dampaknya jika queue diganti menggunakan pop(0) pada graph besar?
+
+Pertanyaan Modul 2:
+1. Pada fungsi masuk(), kenapa proses enqueue pada priority queue memiliki kompleksitas Big-O O(n)? Apa yang terjadi jika jumlah kendaraan dalam antrian sangat besar?
+2. Pada class NodeKendaraan, prioritas kendaraan yang tidak ada di dictionary PRIORITAS akan diberi nilai default 99. Apa dampaknya jika baris: self.prioritas = PRIORITAS.get(self.jenis, 99) diganti tanpa nilai default?
+3. Di fungsi berangkat(), kenapa kendaraan cukup dihapus dari bagian head linked list tanpa traversal tambahan? Jelaskan hubungannya dengan struktur sorted linked list pada priority queue.
+4. Pada proses enqueue di fungsi masuk(), terdapat tie-break berdasarkan waktu_masuk untuk menjaga FIFO. Apa yang terjadi jika pengecekan: node.waktu_masuk < curr.next.waktu_masukdihapus dari kondisi insertion?
+5. Fungsi simulasi_event() menggunakan probabilitas 70% kendaraan masuk dan 30% kendaraan berangkat. Apa dampaknya terhadap panjang antrian jika probabilitas kendaraan masuk dinaikkan menjadi 90%?
+
+Pertanyaan Modul 3:
+1. Pada fungsi `jalankan()`, kenapa masih diperlukan pengecekan:  python id="’wini1501"  if u in dikunjungi:  continue  padahal node diambil dari priority queue berdasarkan jarak minimum? Apa dampaknya jika pengecekan tersebut dihapus? 
+2. Fungsi `_MinPQ.perbarui()` menghapus node lama lalu memasukkan node baru dengan jarak yang diperbarui. Kenapa implementasi ini memiliki kompleksitas O(n)? Apa dampaknya jika jumlah node dalam priority queue sangat besar?
+3. Pada fungsi `rute_alternatif()`, edge dari jalur utama dihapus sementara lalu dikembalikan lagi setelah perhitungan selesai. Apa yang terjadi jika edge tersebut tidak dipulihkan kembali ke graph?
+4. Fungsi `jalur_ke()` melakukan rekonstruksi jalur menggunakan dictionary `pendahulu`. Apa yang terjadi jika proses:  python id="’wini1502"  jalur.reverse()  dihapus dari fungsi tersebut? 
+5. Pada fungsi `jalankan_50_query()`, terdapat perulangan:  python id="’wini1503"  while tujuan == asal:  Mengapa kondisi ini penting dalam simulasi query rute? Apa dampaknya jika kondisi tersebut dihapus?
+
+Pertanyaan Modul 4:
+1. Pada fungsi `insert()`, mengapa urutan insert sangat memengaruhi bentuk BST? Apa yang terjadi jika seluruh node dimasukkan dalam urutan alfabet tanpa `random.shuffle()`?
+2. Pada fungsi `_hapus_rekursif()`, ketika node memiliki dua anak, program menggunakan inorder successor dari subtree kanan. Mengapa metode ini digunakan? Apa yang terjadi jika node langsung dihapus tanpa penggantian successor?
+3. Fungsi `search()` menggunakan perbandingan string leksikografis: python id="’wini1901"
+if kunci < node.kunci: Apa dampaknya jika nama persimpangan menggunakan huruf besar-kecil yang tidak konsisten, misalnya `"malioboro"` dan `"Malioboro"`?
+4. Pada fungsi `inorder()`, traversal menghasilkan daftar node terurut abjad. Apa yang terjadi jika urutan traversal diubah menjadi akar → kanan → kiri? Apakah hasilnya masih terurut?
+5. Fungsi `faktor_keseimbangan()` membandingkan tinggi aktual BST dengan tinggi ideal log₂(n+1). Apa dampaknya terhadap performa search jika nilai faktor ketidakseimbangan semakin mendekati 1.0?
+
+Pertanyaan Modul 5:
+1. Pada fungsi selection_sort_desc(), mengapa algoritma melakukan swap data antar node, bukan menukar pointer node linked list secara langsung? Apa keuntungan pendekatan tersebut?
+2. Pada fungsi `insertion_sort_desc()`, mengapa algoritma insertion sort pada linked list dapat memiliki kompleksitas terbaik O(n)? Dalam kondisi seperti apa hal tersebut bisa terjadi?
+3. Fungsi `identifikasi_bottleneck()` mengasumsikan bahwa linked list sudah terurut descending. Apa yang terjadi jika fungsi ini dipanggil sebelum proses sorting dilakukan?
+4. Pada fungsi `benchmark_sorting()`, mengapa data laporan harus disalin menggunakan: python id="’wini2101" laporan_ref.salin() sebelum diuji dengan Selection Sort dan Insertion Sort? Apa dampaknya jika kedua algoritma menggunakan linked list yang sama?
+5. Fungsi `selection_sort_desc()` selalu memiliki kompleksitas O(n²), sedangkan `insertion_sort_desc()` bisa lebih cepat pada kondisi tertentu. Mengapa insertion sort dapat lebih efisien dibanding selection sort pada data yang hampir terurut?
+
+Pertanyaan Modul 6:
+1. Pada class `SiklusLampu`, mengapa history perubahan fase disimpan menggunakan stack (`history_stack`)? Apa keuntungan struktur stack dibanding queue untuk fitur `mundur()`?
+2. Pada fungsi `cmd_masuk()`, mengapa validasi persimpangan dilakukan menggunakan BST (`state.bst.ada()`) sebelum kendaraan dimasukkan ke antrian? Apa yang terjadi jika validasi tersebut dihapus?
+3. Pada fungsi `cmd_rute()`, mengapa program tetap melakukan pengecekan: python id="’wini2301" if not jalur: setelah algoritma Dijkstra selesai dijalankan? Apa yang terjadi jika kondisi tersebut dihapus?
+4. Fungsi `cmd_laporan()` memberi pilihan antara Selection Sort dan Insertion Sort. Dalam kondisi data kemacetan yang hampir terurut, mengapa Insertion Sort dapat lebih cepat dibanding Selection Sort?
+5. Pada fungsi `proses_perintah()`, mengapa handler perintah disimpan dalam dictionary `PERINTAH_MAP` dibanding menggunakan banyak `if-elif`? Apa keuntungan pendekatan ini terhadap skalabilitas CLI?
