@@ -16,7 +16,7 @@ Cara menjalankan:
 import sys, os, argparse, time, random
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from src.data_model import SEED, VEHICLE_TYPES
+from src.data_structures.data_model import SEED,VEHICLE_TYPES
 from src.data_structures.graph import (
     build_traffic_graph
 )
